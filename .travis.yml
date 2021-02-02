@@ -15,12 +15,7 @@ script: "./gradlew clean build"
 
 before_install:
   - chmod +x gradlew
-
-notifications:
-  email:
-    recipients:
-      - 'pakrjun@gmail.com'
-
+  -
 before_deploy:
   - zip -r first-springboot-project *
   - mkdir -p deploy
@@ -36,3 +31,19 @@ deploy:
     acl: private
     local_dir: deploy
     wait-until-deployed: true
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: first-springboot-project-build
+    key: first-springboot-project.zip
+    bundle_type: zip
+    application: first-springboot-project
+    deployment_group: first-springboot-project-group
+    region: ap-northest-2
+    wait-until-deployed: true
+
+notifications:
+  email:
+    recipients:
+      - pakrjun@gmail.com
